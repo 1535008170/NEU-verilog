@@ -1,0 +1,203 @@
+格雷码转换：
+module test(
+    input [3:0] in,
+	output reg [3:0] out
+    );
+    integer i;
+
+always @(*)
+	begin
+	for(i=0;i<3;i=i+1)
+		begin
+		out[i] = in[i] ^in[i+1];
+	    end
+	out[3] = in[3];
+	end
+
+endmodule
+
+双优先码编码器
+module encode_8_3
+( input [7:0] In, output reg [2:0] A,B);
+integer i,m;
+
+always @*
+begin
+	for (i = 0; i<8 ; i = i+1)
+		begin
+			if(In[i])
+				A = i;//最高优先级
+		end
+m = A;
+	if(t>0)//如果最高优先级位不是出现在In[0]
+		begin
+			for (i = 0; i < t ; i = i+1)//次高优先级
+					begin
+						if(In[i])
+							B = i;
+					end
+		end
+end
+endmodule
+
+BCD转换器
+
+module bcd(
+	input  [9:0] bin,
+	output reg [11:0] bcd
+);
+ 
+	reg [21:0] x;//中间变量
+	integer i;
+	always @(posedge bin or posedge bcd)
+		begin
+			for(i=0;i<22;i=i+1)
+				x[i]=0;
+			x[14:3]=bin;
+			repeat(7)
+			begin
+				if(x[14:11]>4)
+					x[14:11] = x[14:11]+3;
+				if(x[10:7]>4)
+					x[10:7] = x[10:7]+3;
+				if(x[6:3]>4)
+					x[6:3] = x[6:3]+3;
+				x[21:1] = x[20:0];				
+			end
+			bcd[11:0] = x[21:12];
+		end
+
+endmodule
+
+比较器
+
+module compare(
+	input [1:0] a,
+	input [1:0] b,
+	output reg [2:0] out
+);
+always @(posedge a or posedge b or posedge out)
+	begin
+		case({a,b}) 
+			4'b0000:out=3'b100;
+			4'b0001:out=3'b010;
+			4'b0010:out=3'b010;
+			4'b0011:out=3'b010;
+			4'b0100:out=3'b001;
+			4'b0101:out=3'b100;
+			4'b0110:out=3'b010;
+			4'b0111:out=3'b010;
+			4'b1000:out=3'b001;
+			4'b1001:out=3'b001;
+			4'b1010:out=3'b100;
+			4'b1011:out=3'b010;
+			4'b1100:out=3'b001;
+			4'b1101:out=3'b001;
+			4'b1110:out=3'b001;
+			4'b1111:out=3'b100;
+		endcase
+	end	
+endmodule
+
+module bin_bcd12(	//BCD
+	input  [9:0] bin,
+	output reg [11:0] bcd
+);
+ 
+	reg [21:0] x;
+	integer i;
+	always @(posedge bin or posedge bcd)
+		begin
+			for(i=0;i<22;i=i+1)
+				x[i]=0;
+			x[12:3]=bin;
+			repeat(7)//10-3
+			begin
+				if(x[13:10]>4)
+					x[13:10] = x[13:10]+3;
+				if(x[17:14]>4)
+					x[17:14] = x[17:14]+3;
+				if(x[21:18]>4)
+					x[21:18] = x[21:18]+3;
+				x[21:1] = x[20:0];				
+			end
+			bcd[11:0] = x[21:10];
+		end
+
+endmodule
+
+
+`timescale 1ns/10ps		//BCD Testbench
+module bin_bcd10_tb;
+
+reg [9:0] bin;
+wire [11:0] bcd;
+
+bin_bcd12 UI(.bin(bin),
+	.bcd(bcd)
+);
+
+initial
+begin
+
+bin=10'b0000000001;#10;
+bin=10'b0000000010;#10;
+bin=10'b0000000011;#10;
+bin=10'b0000000100;#10;
+bin=10'b0000001000;#10;
+bin=10'b0000010000;#10;
+bin=10'b0000100000;#10;
+bin=10'b0001000000;#10;
+bin=10'b0010000000;#10;
+bin=10'b0100000000;#10;
+bin=10'b1000000111;#10;
+bin=10'b0000001110;#10;
+bin=10'b0001001001;#10;
+bin=10'b0100100010;#10;
+bin=10'b0010001001;#10;
+bin=10'b0111100000;#10;
+bin=10'b1111111111;#10;
+
+end
+endmodule
+
+
+`timescale 1ns/100ps //比较器tb
+module compare_tb;
+
+reg [1:0] a;
+reg [1:0] b;
+wire [2:0] out;
+
+compare_case UI(
+	.a(a),
+	.b(b),
+	.out(out)
+);
+
+initial
+begin
+
+a=2'b00;b=2'b00;#10;
+a=2'b00;b=2'b01;#10;
+a=2'b00;b=2'b10;#10;
+a=2'b00;b=2'b11;#10;
+a=2'b01;b=2'b00;#10;
+a=2'b01;b=2'b01;#10;
+a=2'b01;b=2'b10;#10;
+a=2'b01;b=2'b11;#10;
+a=2'b10;b=2'b00;#10;
+a=2'b10;b=2'b01;#10;
+a=2'b10;b=2'b10;#10;
+a=2'b10;b=2'b11;#10;
+a=2'b11;b=2'b00;#10;
+a=2'b11;b=2'b01;#10;
+a=2'b11;b=2'b10;#10;
+a=2'b11;b=2'b11;#10;
+
+
+			
+end
+
+
+endmodule

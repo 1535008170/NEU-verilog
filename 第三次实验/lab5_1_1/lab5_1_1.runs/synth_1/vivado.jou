@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Thu Apr 14 21:17:16 2022
+# Process ID: 15276
+# Current directory: C:/Users/86183/Desktop/lab5_1_1/lab5_1_1.runs/synth_1
+# Command line: vivado.exe -log SR_latch_dataflow.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source SR_latch_dataflow.tcl
+# Log file: C:/Users/86183/Desktop/lab5_1_1/lab5_1_1.runs/synth_1/SR_latch_dataflow.vds
+# Journal file: C:/Users/86183/Desktop/lab5_1_1/lab5_1_1.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source SR_latch_dataflow.tcl -notrace
